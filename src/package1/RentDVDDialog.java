@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,7 +23,7 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 	private JTextField titleTxt;
 	private JTextField renterTxt;
 	private JTextField rentedOnTxt;
-	private JTextField DueBackTxt;
+	private JTextField dueBackTxt;
 
 	private JButton okButton;
 	private JButton cancelButton;
@@ -67,8 +69,8 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 		date = c.getTime();
 
 		textPanel.add(new JLabel("Due Back: "));
-		DueBackTxt = new JTextField(df.format(date), 15);
-		textPanel.add(DueBackTxt);
+		dueBackTxt = new JTextField(df.format(date), 15);
+		textPanel.add(dueBackTxt);
 
 		getContentPane().add(textPanel, BorderLayout.CENTER);
 
@@ -95,8 +97,23 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 			// save the information in the object
 			closeStatus = true;
 
+			SimpleDateFormat format = new SimpleDateFormat(
+					"MM/dd/yyyy");
+
+			GregorianCalendar cal1 = new GregorianCalendar();
+			GregorianCalendar cal2 = new GregorianCalendar();
+
+			try {
+				cal1.setTime(format.parse(rentedOnTxt.getText()));
+				cal2.setTime(format.parse(dueBackTxt.getText()));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+
 			unit.setNameOfRenter(renterTxt.getText());
 			unit.setTitle(titleTxt.getText());
+			unit.setBought(cal1);
+			unit.setDueBack(cal2);
 
 		}
 

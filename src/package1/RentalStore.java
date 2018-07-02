@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
@@ -37,15 +38,23 @@ public class RentalStore extends AbstractListModel {
 
 		DVD unit = listDVDs.get(arg0);
 
-		// String rentedOnDateStr =
-		// DateFormat.getDateInstance(DateFormat.SHORT)
-		// .format(unit.getRentedOn().getTime());
+		String rentedOnDateStr = DateFormat
+				.getDateInstance(DateFormat.SHORT)
+				.format(unit.getBought().getTime());
 
-		String line = "Name: " + " "
-				+ listDVDs.get(arg0).getNameOfRenter();
+		String dueBackOnDateStr = DateFormat
+				.getDateInstance(DateFormat.SHORT)
+				.format(unit.getDueBack().getTime());
 
-		// if (unit instanceof Game)
-		// line += ", Car Player: " + ((Game)unit).getPlayer();
+		String line = "Name: " + listDVDs.get(arg0).getNameOfRenter()
+				+ " ";
+
+		line += "Title: " + unit.getTitle() + ", ";
+		line += "Rented On: " + rentedOnDateStr + ", ";
+		line += "Due Back: " + dueBackOnDateStr;
+
+		if (unit instanceof Game)
+			line += ", Player: " + ((Game) unit).getPlayer();
 
 		return line;
 	}

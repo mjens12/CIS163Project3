@@ -140,6 +140,12 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			list.add(dvd);
 		}
 
+		if (e.getSource() == rentGame) {
+			Game game = new Game();
+			RentGameDialog dialog = new RentGameDialog(this, game);
+			list.add(game);
+		}
+
 		if (returnItem == e.getSource()) {
 			int index = JListArea.getSelectedIndex();
 
