@@ -28,35 +28,42 @@ public class RentalStore extends AbstractListModel {
 		fireIntervalAdded(this, 0, listDVDs.size());
 	}
 
+	public void remove(int a) {
+		listDVDs.remove(a);
+		fireIntervalAdded(this, 0, listDVDs.size());
+	}
+
 	public DVD get(int i) {
 		return listDVDs.get(i);
 	}
 
 	public Object getElementAt(int arg0) {
 
-		// return "Happy";
-
 		DVD unit = listDVDs.get(arg0);
 
-		String rentedOnDateStr = DateFormat
-				.getDateInstance(DateFormat.SHORT)
-				.format(unit.getBought().getTime());
+		try {
+			String rentedOnDateStr = DateFormat
+					.getDateInstance(DateFormat.SHORT)
+					.format(unit.getBought().getTime());
 
-		String dueBackOnDateStr = DateFormat
-				.getDateInstance(DateFormat.SHORT)
-				.format(unit.getDueBack().getTime());
+			String dueBackOnDateStr = DateFormat
+					.getDateInstance(DateFormat.SHORT)
+					.format(unit.getDueBack().getTime());
 
-		String line = "Name: " + listDVDs.get(arg0).getNameOfRenter()
-				+ " ";
+			String line = "Name: "
+					+ listDVDs.get(arg0).getNameOfRenter() + " ";
 
-		line += "Title: " + unit.getTitle() + ", ";
-		line += "Rented On: " + rentedOnDateStr + ", ";
-		line += "Due Back: " + dueBackOnDateStr;
+			line += "Title: " + unit.getTitle() + ", ";
+			line += "Rented On: " + rentedOnDateStr + ", ";
+			line += "Due Back: " + dueBackOnDateStr;
 
-		if (unit instanceof Game)
-			line += ", Player: " + ((Game) unit).getPlayer();
+			if (unit instanceof Game)
+				line += ", Player: " + ((Game) unit).getPlayer();
 
-		return line;
+			return line;
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 
 	public int getSize() {

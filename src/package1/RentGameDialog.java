@@ -11,10 +11,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -25,6 +25,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 	private JTextField renterTxt;
 	private JTextField rentedOnTxt;
 	private JTextField dueBackTxt;
+	private JTextField playerTxt;
 
 	private JButton okButton;
 	private JButton cancelButton;
@@ -32,7 +33,8 @@ public class RentGameDialog extends JDialog implements ActionListener {
 
 	private Game unit;
 
-	private JComboBox playerList;
+	// For Proj 4, not used here
+	// private JComboBox playerList;
 
 	private String[] playerOptions = { "Xbox360", "XBox1", "PS4",
 			"WiiU", "NintendoSwitch" };
@@ -78,14 +80,15 @@ public class RentGameDialog extends JDialog implements ActionListener {
 		dueBackTxt = new JTextField(df.format(date), 15);
 		textPanel.add(dueBackTxt);
 
-		// combobox for player type
+		// combobox for player type, not used here, for Proj 4
 
-		playerList = new JComboBox(playerOptions);
-		playerList.setSelectedIndex(0);
-		playerList.addActionListener(this);
+		// playerList = new JComboBox(playerOptions);
+		// playerList.setSelectedIndex(0);
+		// playerList.addActionListener(this);
 
 		textPanel.add(new JLabel("Player Type:"));
-		textPanel.add(playerList);
+		playerTxt = new JTextField("PS4", 30);
+		textPanel.add(playerTxt);
 
 		getContentPane().add(textPanel, BorderLayout.CENTER);
 
@@ -128,9 +131,18 @@ public class RentGameDialog extends JDialog implements ActionListener {
 			unit.setTitle(titleTxt.getText());
 			unit.setBought(cal1);
 			unit.setDueBack(cal2);
-			PlayerType p = PlayerType
-					.valueOf((String) playerList.getSelectedItem());
-			unit.setPlayer(p);
+
+			// For proj 4, not used here
+			// PlayerType p = PlayerType
+			// .valueOf((String) playerList.getSelectedItem());
+			try {
+				PlayerType p = PlayerType.valueOf(playerTxt.getText());
+				unit.setPlayer(p);
+			} catch (Exception exc) {
+				JOptionPane.showMessageDialog(null,
+						"Please enter Xbox360, XBox1, PS4, WiiU, "
+								+ "or NintendoSwitch in the player field");
+			}
 
 			// make the dialog disappear
 			dispose();

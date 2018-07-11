@@ -147,25 +147,39 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 		}
 
 		if (returnItem == e.getSource()) {
-			int index = JListArea.getSelectedIndex();
 
-			GregorianCalendar date = new GregorianCalendar();
-			String inputDate = JOptionPane
-					.showInputDialog("Enter return date: ");
-			SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-			try {
-				Date newDate = df.parse(inputDate);
-				date.setTime(newDate);
-			} catch (ParseException pe) {
-				System.out.println("Could not parse input date!");
+			int index = JListArea.getSelectedIndex();
+			if (index < 0) {
+				JOptionPane.showMessageDialog(null,
+						"Please select the DVD or game you are returning");
+			} else {
+				GregorianCalendar date = new GregorianCalendar();
+				String inputDate = JOptionPane
+						.showInputDialog("Enter return date: ");
+				if (inputDate != null) {
+					SimpleDateFormat df = new SimpleDateFormat(
+							"MM/dd/yyyy");
+
+					// TODO figure out how to bring the dialog box up
+					// again if the date isnt properly formatted
+					try {
+						Date newDate = df.parse(inputDate);
+						date.setTime(newDate);
+						DVD unit = list.get(index);
+						JOptionPane.showMessageDialog(null, "Thanks "
+								+ unit.getNameOfRenter()
+								+ " for returning " + unit.getTitle()
+								+ ", you owe: " + unit.getCost(date)
+								+ " dollars");
+						list.remove(index);
+					} catch (ParseException pe) {
+						JOptionPane.showMessageDialog(null,
+								"Could not parse input date! Please try again");
+					}
+
+				}
 			}
 
-			DVD unit = list.get(index);
-			JOptionPane.showMessageDialog(null,
-					"Thanks " + unit.getNameOfRenter()
-							+ " for returning " + unit.getTitle()
-							+ ", you owe: " + unit.getCost(date)
-							+ " dollars");
 		}
 	}
 

@@ -56,6 +56,9 @@ public class DVD implements Serializable {
 	}
 
 	public double getCost(GregorianCalendar date) {
-		return 2.0;
+		if (date.compareTo(dueBack) <= 0)
+			return 1.20;
+		else
+			return 3.20;
 	}
 }

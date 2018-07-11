@@ -114,11 +114,13 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 			unit.setTitle(titleTxt.getText());
 			unit.setBought(cal1);
 			unit.setDueBack(cal2);
-
+			dispose();
 		}
-
-		// make the dialog disappear
-		dispose();
+		if (button == cancelButton) {
+			// make the dialog disappear
+			dispose();
+			closeStatus = true;
+		}
 	}
 
 	public boolean closeOK() {
