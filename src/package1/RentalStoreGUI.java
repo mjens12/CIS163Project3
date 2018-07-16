@@ -117,7 +117,8 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showOpenDialog(null);
 			if (status == JFileChooser.APPROVE_OPTION) {
-				String filename = chooser.getSelectedFile().getAbsolutePath();
+				String filename = chooser.getSelectedFile()
+						.getAbsolutePath();
 				if (openSerItem == comp)
 					list.loadFromSerializable(filename);
 			}
@@ -127,7 +128,8 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showSaveDialog(null);
 			if (status == JFileChooser.APPROVE_OPTION) {
-				String filename = chooser.getSelectedFile().getAbsolutePath();
+				String filename = chooser.getSelectedFile()
+						.getAbsolutePath();
 				if (saveSerItem == e.getSource())
 					list.saveAsSerializable(filename);
 			}
@@ -149,28 +151,41 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			list.add(game);
 		}
 
+		// TODO add exception for returning before the item has been
+		// checked out
 		if (returnItem == e.getSource()) {
 
 			int index = JListArea.getSelectedIndex();
 			if (index < 0) {
-				JOptionPane.showMessageDialog(null, "Please select the DVD or game you are returning");
+				JOptionPane.showMessageDialog(null,
+						"Please select the DVD or game you are returning");
 			} else {
 				GregorianCalendar date = new GregorianCalendar();
-				String inputDate = JOptionPane.showInputDialog("Enter return date: ");
+				String inputDate = JOptionPane
+						.showInputDialog("Enter return date: ");
+				DVD unit = list.get(index);
 				if (inputDate != null) {
-					SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+					SimpleDateFormat df = new SimpleDateFormat(
+							"MM/dd/yyyy");
 
-					// TODO figure out how to bring the dialog box up
-					// again if the date isnt properly formatted
 					try {
 						Date newDate = df.parse(inputDate);
 						date.setTime(newDate);
-						DVD unit = list.get(index);
-						JOptionPane.showMessageDialog(null, "Thanks " + unit.getNameOfRenter() + " for returning "
-								+ unit.getTitle() + ", you owe: " + unit.getCost(date) + " dollars");
-						list.remove(index);
+						if (date.compareTo(
+								list.get(index).getBought()) < 0) {
+							JOptionPane.showMessageDialog(null,
+									"You can not return an item before it was checked out! Please try again");
+						} else {
+							JOptionPane.showMessageDialog(null, ""
+									+ unit.getNameOfRenter()
+									+ ", thank you for returning "
+									+ unit.getTitle() + ". You owe: "
+									+ unit.getCost(date) + " dollars");
+							list.remove(index);
+						}
 					} catch (ParseException pe) {
-						JOptionPane.showMessageDialog(null, "Could not parse input date! Please try again");
+						JOptionPane.showMessageDialog(null,
+								"Could not parse input date! Please try again");
 					}
 
 				}
@@ -179,22 +194,30 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == lateItem) {
 			GregorianCalendar date = new GregorianCalendar();
-			String inputDate = JOptionPane.showInputDialog("Please enter the date you are interested in: ");
+			String inputDate = JOptionPane.showInputDialog(
+					"Please enter the date you are interested in: ");
 			if (inputDate != null) {
-				SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+				SimpleDateFormat df = new SimpleDateFormat(
+						"MM/dd/yyyy");
 				try {
 					Date newDate = df.parse(inputDate);
 					date.setTime(newDate);
 					if (list.getLate(date).equals(""))
-						JOptionPane.showMessageDialog(null, "No rented items are late as of "
-								+ DateFormat.getDateInstance(DateFormat.SHORT).format(newDate));
+						JOptionPane.showMessageDialog(null,
+								"No rented items are late as of "
+										+ DateFormat.getDateInstance(
+												DateFormat.SHORT)
+												.format(newDate));
 					else
 						JOptionPane.showMessageDialog(null,
 								"Below are the items that will be late as of "
-										+ DateFormat.getDateInstance(DateFormat.SHORT).format(newDate) + ": \n"
-										+ list.getLate(date));
+										+ DateFormat.getDateInstance(
+												DateFormat.SHORT)
+												.format(newDate)
+										+ ": \n" + list.getLate(date));
 				} catch (ParseException pe) {
-					JOptionPane.showMessageDialog(null, "Could not parse input date! Please try again");
+					JOptionPane.showMessageDialog(null,
+							"Could not parse input date! Please try again");
 				}
 			}
 
