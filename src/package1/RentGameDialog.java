@@ -36,8 +36,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 	// For Proj 4, not used here
 	// private JComboBox playerList;
 
-	private String[] playerOptions = { "Xbox360", "XBox1", "PS4",
-			"WiiU", "NintendoSwitch" };
+	private String[] playerOptions = { "Xbox360", "XBox1", "PS4", "WiiU", "NintendoSwitch" };
 
 	public RentGameDialog(JFrame parent, Game d) {
 		// call parent and create a 'modal' dialog
@@ -114,8 +113,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 			// save the information in the object
 			closeStatus = true;
 
-			SimpleDateFormat format = new SimpleDateFormat(
-					"MM/dd/yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 
 			GregorianCalendar cal1 = new GregorianCalendar();
 			GregorianCalendar cal2 = new GregorianCalendar();
@@ -123,34 +121,36 @@ public class RentGameDialog extends JDialog implements ActionListener {
 			try {
 				cal1.setTime(format.parse(rentedOnTxt.getText()));
 				cal2.setTime(format.parse(dueBackTxt.getText()));
+				if (cal1.compareTo(cal2) <= 0) {
+					unit.setNameOfRenter(renterTxt.getText());
+					unit.setTitle(titleTxt.getText());
+					unit.setBought(cal1);
+					unit.setDueBack(cal2);
+				} else
+					JOptionPane.showMessageDialog(null,
+							"Please enter a due date that is later than the rented on date");
 			} catch (ParseException e1) {
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Please enter valid rented on and due back dates");
 			}
-
-			unit.setNameOfRenter(renterTxt.getText());
-			unit.setTitle(titleTxt.getText());
-			unit.setBought(cal1);
-			unit.setDueBack(cal2);
 
 			// For proj 4, not used here
 			// PlayerType p = PlayerType
 			// .valueOf((String) playerList.getSelectedItem());
+
 			try {
 				PlayerType p = PlayerType.valueOf(playerTxt.getText());
 				unit.setPlayer(p);
+				dispose();
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(null,
-						"Please enter Xbox360, XBox1, PS4, WiiU, "
-								+ "or NintendoSwitch in the player field");
+						"Please enter Xbox360, XBox1, PS4, WiiU, " + "or NintendoSwitch in the player field");
 			}
 
-			// make the dialog disappear
-			dispose();
 		}
 		if (e.getSource() == cancelButton) {
 			// make the dialog disappear
-			dispose();
 			closeStatus = true;
+			dispose();
 		}
 	}
 

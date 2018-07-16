@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
@@ -42,16 +44,11 @@ public class RentalStore extends AbstractListModel {
 		DVD unit = listDVDs.get(arg0);
 
 		try {
-			String rentedOnDateStr = DateFormat
-					.getDateInstance(DateFormat.SHORT)
-					.format(unit.getBought().getTime());
+			String rentedOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(unit.getBought().getTime());
 
-			String dueBackOnDateStr = DateFormat
-					.getDateInstance(DateFormat.SHORT)
-					.format(unit.getDueBack().getTime());
+			String dueBackOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(unit.getDueBack().getTime());
 
-			String line = "Name: "
-					+ listDVDs.get(arg0).getNameOfRenter() + " ";
+			String line = "Name: " + listDVDs.get(arg0).getNameOfRenter() + " ";
 
 			line += "Title: " + unit.getTitle() + ", ";
 			line += "Rented On: " + rentedOnDateStr + ", ";
@@ -94,5 +91,41 @@ public class RentalStore extends AbstractListModel {
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(null, "Error in loading db");
 		}
+	}
+
+	public String getLate(GregorianCalendar lateDate) {
+		String lateThings = "";
+		for (int i = 0; i < listDVDs.size(); i++) {
+			if (listDVDs.get(i).getDueBack().compareTo(lateDate) <= 0) {
+				try {
+					DVD unit = listDVDs.get(i);
+					String rentedOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT)
+							.format(unit.getBought().getTime());
+
+					String dueBackOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT)
+							.format(unit.getDueBack().getTime());
+
+					String line = "Name: " + listDVDs.get(i).getNameOfRenter() + " ";
+
+					line += "Title: " + unit.getTitle() + ", ";
+					line += "Rented On: " + rentedOnDateStr + ", ";
+					line += "Due Back: " + dueBackOnDateStr;
+
+					if (unit instanceof Game)
+						line += ", Player: " + ((Game) unit).getPlayer();
+
+					line += (", " + daysBetween(lateDate, unit.getDueBack()) + " days late");
+					lateThings += (line + "\n");
+
+				} catch (Exception ex) {
+
+				}
+			}
+		}
+			return lateThings;
+	}
+
+	private int daysBetween(GregorianCalendar d1, GregorianCalendar d2) {
+		return (int) ((d1.getTimeInMillis() - d2.getTimeInMillis()) / (1000 * 60 * 60 * 24));
 	}
 }

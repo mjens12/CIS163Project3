@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -97,8 +98,7 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 			// save the information in the object
 			closeStatus = true;
 
-			SimpleDateFormat format = new SimpleDateFormat(
-					"MM/dd/yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 
 			GregorianCalendar cal1 = new GregorianCalendar();
 			GregorianCalendar cal2 = new GregorianCalendar();
@@ -106,20 +106,23 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 			try {
 				cal1.setTime(format.parse(rentedOnTxt.getText()));
 				cal2.setTime(format.parse(dueBackTxt.getText()));
+				if (cal1.compareTo(cal2) <= 0) {
+					unit.setNameOfRenter(renterTxt.getText());
+					unit.setTitle(titleTxt.getText());
+					unit.setBought(cal1);
+					unit.setDueBack(cal2);
+					dispose();
+				} else
+					JOptionPane.showMessageDialog(null,
+							"Please enter a due date that is later than the rented on date");
 			} catch (ParseException e1) {
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Please enter valid rented on and due back dates");
 			}
-
-			unit.setNameOfRenter(renterTxt.getText());
-			unit.setTitle(titleTxt.getText());
-			unit.setBought(cal1);
-			unit.setDueBack(cal2);
-			dispose();
 		}
 		if (button == cancelButton) {
 			// make the dialog disappear
-			dispose();
 			closeStatus = true;
+			dispose();
 		}
 	}
 
