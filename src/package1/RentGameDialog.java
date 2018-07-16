@@ -36,7 +36,8 @@ public class RentGameDialog extends JDialog implements ActionListener {
 	// For Proj 4, not used here
 	// private JComboBox playerList;
 
-	private String[] playerOptions = { "Xbox360", "XBox1", "PS4", "WiiU", "NintendoSwitch" };
+	private String[] playerOptions = { "Xbox360", "XBox1", "PS4",
+			"WiiU", "NintendoSwitch" };
 
 	public RentGameDialog(JFrame parent, Game d) {
 		// call parent and create a 'modal' dialog
@@ -71,6 +72,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 		textPanel.add(rentedOnTxt);
 
 		Calendar c = Calendar.getInstance();
+		c.setLenient(false);
 		c.setTime(date);
 		c.add(Calendar.DATE, 1); // number of days to add
 		date = c.getTime();
@@ -113,10 +115,14 @@ public class RentGameDialog extends JDialog implements ActionListener {
 			// save the information in the object
 			closeStatus = true;
 
-			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+			SimpleDateFormat format = new SimpleDateFormat(
+					"MM/dd/yyyy");
 
 			GregorianCalendar cal1 = new GregorianCalendar();
 			GregorianCalendar cal2 = new GregorianCalendar();
+
+			cal1.setLenient(false);
+			cal2.setLenient(false);
 
 			try {
 				cal1.setTime(format.parse(rentedOnTxt.getText()));
@@ -130,7 +136,8 @@ public class RentGameDialog extends JDialog implements ActionListener {
 					JOptionPane.showMessageDialog(null,
 							"Please enter a due date that is later than the rented on date");
 			} catch (ParseException e1) {
-				JOptionPane.showMessageDialog(null, "Please enter valid rented on and due back dates");
+				JOptionPane.showMessageDialog(null,
+						"Please enter valid rented on and due back dates");
 			}
 
 			// For proj 4, not used here
@@ -143,7 +150,8 @@ public class RentGameDialog extends JDialog implements ActionListener {
 				dispose();
 			} catch (Exception exc) {
 				JOptionPane.showMessageDialog(null,
-						"Please enter Xbox360, XBox1, PS4, WiiU, " + "or NintendoSwitch in the player field");
+						"Please enter Xbox360, XBox1, PS4, WiiU, "
+								+ "or NintendoSwitch in the player field");
 			}
 
 		}

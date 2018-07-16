@@ -151,7 +151,6 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			list.add(game);
 		}
 
-		// TODO set leniencey to non-lenient for gregorian calendar
 		if (returnItem == e.getSource()) {
 
 			int index = JListArea.getSelectedIndex();
@@ -160,6 +159,7 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 						"Please select the DVD or game you are returning");
 			} else {
 				GregorianCalendar date = new GregorianCalendar();
+				date.setLenient(false);
 				String inputDate = JOptionPane
 						.showInputDialog("Enter return date: ");
 				DVD unit = list.get(index);
@@ -193,6 +193,7 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == lateItem) {
 			GregorianCalendar date = new GregorianCalendar();
+			date.setLenient(false);
 			String inputDate = JOptionPane.showInputDialog(
 					"Please enter the date you are interested in: ");
 			if (inputDate != null) {
