@@ -151,8 +151,7 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			list.add(game);
 		}
 
-		// TODO add exception for returning before the item has been
-		// checked out
+		// TODO set leniencey to non-lenient for gregorian calendar
 		if (returnItem == e.getSource()) {
 
 			int index = JListArea.getSelectedIndex();
