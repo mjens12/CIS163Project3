@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,40 +18,76 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+/**********************************************************************
+ * Class that handles the GUI for renting a Game
+ * 
+ * @author Max Jensen and Monica Klosin
+ * @version 1.0
+ *********************************************************************/
 public class RentGameDialog extends JDialog implements ActionListener {
 
+	/** Title of Game Text Field */
 	private JTextField titleTxt;
+
+	/** Renter's name Text Field */
 	private JTextField renterTxt;
+
+	/** Text Field for date game was rented */
 	private JTextField rentedOnTxt;
+
+	/** Text Field for due back date */
 	private JTextField dueBackTxt;
+
+	/** Text Field of console */
 	private JTextField playerTxt;
 
+	/** JButton to confirm game rental */
 	private JButton okButton;
+
+	/** JButton to Cancel game rental */
 	private JButton cancelButton;
+
+	/** Boolean to check to close Game rent textBox or not */
 	private boolean closeStatus;
 
+	/** Game that is being added */
 	private Game unit;
 
 	// For Proj 4, not used here
 	// private JComboBox playerList;
 
-	private String[] playerOptions = { "Xbox360", "XBox1", "PS4",
-			"WiiU", "NintendoSwitch" };
+	// For Proj 4, not used here
+	/** Array to hold game console options */
+	// private String[] playerOptions = { "Xbox360", "XBox1", "PS4",
+	// "WiiU", "NintendoSwitch" };
 
+	/******************************************************************
+	 * Default Constructor creates JFrame box as well as its GUI
+	 * elements
+	 * 
+	 * @param parent
+	 *            the parent JFrame
+	 * @param d
+	 *            The Game to be created
+	 *****************************************************************/
 	public RentGameDialog(JFrame parent, Game d) {
-		// call parent and create a 'modal' dialog
+		// Calls parent and create a 'modal' dialog
 		super(parent, true);
+
+		// Sets the title and size of the frame as well as close status
 
 		setTitle("Rent a Game:");
 		closeStatus = false;
 		setSize(400, 200);
 
+		// Sets the passed DVD to unit
+
 		unit = d;
-		// prevent user from closing window
+		// Prevents user from closing window
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-		// instantiate and display text fields
-
+		// Instantiates and displays JLabels and text fields (with
+		// default text values) for each input area
 		JPanel textPanel = new JPanel();
 		textPanel.setLayout(new GridLayout(6, 2));
 
@@ -72,9 +107,8 @@ public class RentGameDialog extends JDialog implements ActionListener {
 		textPanel.add(rentedOnTxt);
 
 		Calendar c = Calendar.getInstance();
-		c.setLenient(false);
 		c.setTime(date);
-		c.add(Calendar.DATE, 1); // number of days to add
+		c.add(Calendar.DATE, 1);
 		date = c.getTime();
 
 		textPanel.add(new JLabel("Due Back:"));
@@ -93,7 +127,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 
 		getContentPane().add(textPanel, BorderLayout.CENTER);
 
-		// Instantiate and display two buttons
+		// Instantiates and displays the two buttons
 		okButton = new JButton("OK");
 		cancelButton = new JButton("Cancel");
 		JPanel buttonPanel = new JPanel();
@@ -103,47 +137,85 @@ public class RentGameDialog extends JDialog implements ActionListener {
 		okButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 
+		// Sets size and visibility
 		setSize(300, 300);
 		setVisible(true);
 	}
 
-	@Override
+	/******************************************************************
+	 * ActionPreformed class that handles button presses and other
+	 * actions
+	 * 
+	 * @throws Exception
+	 *             If the entered dates are invaid
+	 *****************************************************************/
+
 	public void actionPerformed(ActionEvent e) {
 
-		// if OK clicked the fill the object
+		// If OK is clicked, fill the object with entered info
 		if (e.getSource() == okButton) {
-			// save the information in the object
+			// Allows the frame to be closed
 			closeStatus = true;
 
 			SimpleDateFormat format = new SimpleDateFormat(
 					"MM/dd/yyyy");
 
+			// Creates two calendars to manage the entered dates
 			GregorianCalendar cal1 = new GregorianCalendar();
 			GregorianCalendar cal2 = new GregorianCalendar();
 
+			// Sets leniency of the two calendars
 			cal1.setLenient(false);
 			cal2.setLenient(false);
 
+			// Attempts to parse the entered dates
 			try {
 				cal1.setTime(format.parse(rentedOnTxt.getText()));
 				cal2.setTime(format.parse(dueBackTxt.getText()));
-				if (cal1.compareTo(cal2) <= 0) {
-					unit.setNameOfRenter(renterTxt.getText());
-					unit.setTitle(titleTxt.getText());
-					unit.setBought(cal1);
-					unit.setDueBack(cal2);
-				} else
-					JOptionPane.showMessageDialog(null,
-							"Please enter a due date that is later than the rented on date");
-			} catch (ParseException e1) {
+
+				// Checks to see that the dates are in the right format
+				if (rentedOnTxt.getText().length() != 10
+						|| rentedOnTxt.getText().charAt(2) != '/'
+						|| rentedOnTxt.getText().charAt(5) != '/'
+						|| dueBackTxt.getText().length() != 10
+						|| dueBackTxt.getText().charAt(2) != '/'
+						|| dueBackTxt.getText().charAt(5) != '/')
+					throw new Exception();
+				else {
+					// If the due back date is later than the rented on
+					// date, fills the unit object with the entered
+					// information
+					if (cal1.compareTo(cal2) <= 0) {
+						unit.setNameOfRenter(renterTxt.getText());
+						unit.setTitle(titleTxt.getText());
+						unit.setBought(cal1);
+						unit.setDueBack(cal2);
+					}
+
+					// If the due back date is earlier than the rented
+					// on date displays a dialog box and doesn't add the
+					// info
+					else
+						JOptionPane.showMessageDialog(null,
+								"Please enter a due date that is later than the rented on date");
+				}
+			}
+
+			// Catches exceptions
+			catch (Exception e1) {
 				JOptionPane.showMessageDialog(null,
 						"Please enter valid rented on and due back dates");
 			}
 
-			// For proj 4, not used here
+			// Not used here, for proj4
 			// PlayerType p = PlayerType
 			// .valueOf((String) playerList.getSelectedItem());
 
+			// Attempts to parse the playertype field into one of the
+			// enum playertype options, if correct, adds that
+			// information to the game, if not, throws an exception that
+			// is caught below and that displays a message for the user
+			// telling them to enter a proper player
 			try {
 				PlayerType p = PlayerType.valueOf(playerTxt.getText());
 				unit.setPlayer(p);
@@ -155,13 +227,20 @@ public class RentGameDialog extends JDialog implements ActionListener {
 			}
 
 		}
+
+		// If cancel is clicked, allows the frame to be closed and
+		// closes the frame
 		if (e.getSource() == cancelButton) {
-			// make the dialog disappear
 			closeStatus = true;
 			dispose();
 		}
 	}
 
+	/******************************************************************
+	 * Method that returns whether or not it is ok to close the frame
+	 * 
+	 * @return boolean whether or not it is alright to close the frame
+	 *****************************************************************/
 	public boolean closeOK() {
 		return closeStatus;
 	}

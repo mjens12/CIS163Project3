@@ -7,29 +7,51 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
 
+/**********************************************************************
+ * RentalStore class that extends AbstractListModel, manages the list of
+ * rented items
+ * 
+ * @author Max Jensen and Monica Klosin
+ * @version 1.0
+ *********************************************************************/
 public class RentalStore extends AbstractListModel {
 
+	/** ArrayList of DVDs that holds items in the store */
 	private ArrayList<DVD> listDVDs;
 
-	private boolean filter;
-
+	/******************************************************************
+	 * Default constructor that calls the AbstractListModel constructor
+	 * and creates the arraylist of DVDs
+	 *****************************************************************/
 	public RentalStore() {
 		super();
-		filter = false;
 		listDVDs = new ArrayList<DVD>();
 	}
 
+	/******************************************************************
+	 * Method for adding a DVD to the arraylist, also triggers a GUI
+	 * update to show new list contents
+	 * 
+	 * @param a
+	 *            DVD to be added
+	 *****************************************************************/
 	public void add(DVD a) {
 		listDVDs.add(a);
 		fireIntervalAdded(this, 0, listDVDs.size());
 	}
 
+	/******************************************************************
+	 * Method for removing a DVD from the arraylist, also triggers a GUI
+	 * update to show new list contents
+	 * 
+	 * @param a
+	 *            DVD to be added
+	 *****************************************************************/
 	public void remove(int a) {
 		listDVDs.remove(a);
 		fireIntervalAdded(this, 0, listDVDs.size());
@@ -44,11 +66,16 @@ public class RentalStore extends AbstractListModel {
 		DVD unit = listDVDs.get(arg0);
 
 		try {
-			String rentedOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(unit.getBought().getTime());
+			String rentedOnDateStr = DateFormat
+					.getDateInstance(DateFormat.SHORT)
+					.format(unit.getBought().getTime());
 
-			String dueBackOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(unit.getDueBack().getTime());
+			String dueBackOnDateStr = DateFormat
+					.getDateInstance(DateFormat.SHORT)
+					.format(unit.getDueBack().getTime());
 
-			String line = "Name: " + listDVDs.get(arg0).getNameOfRenter() + " ";
+			String line = "Name: "
+					+ listDVDs.get(arg0).getNameOfRenter() + " ";
 
 			line += "Title: " + unit.getTitle() + ", ";
 			line += "Rented On: " + rentedOnDateStr + ", ";
@@ -99,22 +126,28 @@ public class RentalStore extends AbstractListModel {
 			if (listDVDs.get(i).getDueBack().compareTo(lateDate) <= 0) {
 				try {
 					DVD unit = listDVDs.get(i);
-					String rentedOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT)
+					String rentedOnDateStr = DateFormat
+							.getDateInstance(DateFormat.SHORT)
 							.format(unit.getBought().getTime());
 
-					String dueBackOnDateStr = DateFormat.getDateInstance(DateFormat.SHORT)
+					String dueBackOnDateStr = DateFormat
+							.getDateInstance(DateFormat.SHORT)
 							.format(unit.getDueBack().getTime());
 
-					String line = "Name: " + listDVDs.get(i).getNameOfRenter() + " ";
+					String line = "Name: "
+							+ listDVDs.get(i).getNameOfRenter() + " ";
 
 					line += "Title: " + unit.getTitle() + ", ";
 					line += "Rented On: " + rentedOnDateStr + ", ";
 					line += "Due Back: " + dueBackOnDateStr;
 
 					if (unit instanceof Game)
-						line += ", Player: " + ((Game) unit).getPlayer();
+						line += ", Player: "
+								+ ((Game) unit).getPlayer();
 
-					line += (", " + daysBetween(lateDate, unit.getDueBack()) + " days late");
+					line += (", "
+							+ daysBetween(lateDate, unit.getDueBack())
+							+ " days late");
 					lateThings += (line + "\n");
 
 				} catch (Exception ex) {
@@ -122,10 +155,12 @@ public class RentalStore extends AbstractListModel {
 				}
 			}
 		}
-			return lateThings;
+		return lateThings;
 	}
 
-	private int daysBetween(GregorianCalendar d1, GregorianCalendar d2) {
-		return (int) ((d1.getTimeInMillis() - d2.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+	private int daysBetween(GregorianCalendar d1,
+			GregorianCalendar d2) {
+		return (int) ((d1.getTimeInMillis() - d2.getTimeInMillis())
+				/ (1000 * 60 * 60 * 24));
 	}
 }

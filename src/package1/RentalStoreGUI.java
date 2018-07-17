@@ -3,7 +3,6 @@ package package1;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -16,22 +15,23 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+/**********************************************************************
+ * Class that handles the GUI of the rentalstore
+ * 
+ * @author Max Jensen and Monica Klosin
+ * @version 1.0
+ **********************************************************************/
+
 public class RentalStoreGUI extends JFrame implements ActionListener {
 
-	/**
-	 * Holds menu bar
-	 */
+	/** Holds menu bar */
 	private JMenuBar menus;
 
-	/**
-	 * menus in the menu bar
-	 */
+	/** Menus in the menu bar */
 	private JMenu fileMenu;
 	private JMenu actionMenu;
 
-	/**
-	 * menu items in each of the menus
-	 */
+	/** Menu items in each of the menus */
 	private JMenuItem openSerItem;
 	private JMenuItem exitItem;
 	private JMenuItem saveSerItem;
@@ -42,22 +42,23 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 	private JMenuItem returnItem;
 	private JMenuItem lateItem;
 
-	/**
-	 * Holds the list engine
-	 */
+	/** Holds the RentalStore list with items */
 	private RentalStore list;
 
-	/**
-	 * Holds JListArea
-	 */
+	/** Holds the JList */
 	private JList JListArea;
 
+	// Not used, for proj4
 	/** Scroll pane */
 	// private JScrollPane scrollList;
 
+	/******************************************************************
+	 * Default constructor that creates and arranges all the GUI
+	 * elements
+	 *****************************************************************/
 	public RentalStoreGUI() {
 
-		// adding menu bar and menu items
+		// Adds menu bar and menu items
 		menus = new JMenuBar();
 		fileMenu = new JMenu("File");
 		actionMenu = new JMenu("Action");
@@ -71,7 +72,7 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 		returnItem = new JMenuItem("Return");
 		lateItem = new JMenuItem("Check Days Late");
 
-		// adding items to bar
+		// Adds items menus
 		fileMenu.add(openSerItem);
 		fileMenu.add(saveSerItem);
 		fileMenu.add(exitItem);
@@ -80,10 +81,11 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 		actionMenu.add(returnItem);
 		actionMenu.add(lateItem);
 
+		// Adds menus to bar
 		menus.add(fileMenu);
 		menus.add(actionMenu);
 
-		// adding actionListener
+		// Adds actionListeners
 		openSerItem.addActionListener(this);
 		saveSerItem.addActionListener(this);
 		exitItem.addActionListener(this);
@@ -92,27 +94,34 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 		returnItem.addActionListener(this);
 		lateItem.addActionListener(this);
 
+		// Sets the menus
 		setJMenuBar(menus);
+
+		// Sets close operation
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// adding list to the GUI1024
+		// Adds list and JList to the GUI
 		list = new RentalStore();
 		JListArea = new JList(list);
 		add(JListArea);
-		// JListArea.setVisible(true);
 
+		// Sets visibility and size
 		setVisible(true);
 		setSize(600, 500);
-		// setSize(new Dimension (550,400));
-		// setMinimumSize(new Dimension(550,400));
-		// setMaximumSize(new Dimension(550,400));
-
 	}
 
+	/******************************************************************
+	 * ActionPerformed class that handles button presses and dependent
+	 * actions
+	 * 
+	 * @throws Exception
+	 *             If the entered dates are formatted incorrectly
+	 *****************************************************************/
 	public void actionPerformed(ActionEvent e) {
 
 		Object comp = e.getSource();
 
+		// If open button is pressed, handles opening a serialized save
 		if (openSerItem == comp || openTextItem == comp) {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showOpenDialog(null);
@@ -124,6 +133,7 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			}
 		}
 
+		// If save button is pressed, handles saving a serialized object
 		if (saveSerItem == comp || saveTextItem == comp) {
 			JFileChooser chooser = new JFileChooser();
 			int status = chooser.showSaveDialog(null);
@@ -135,54 +145,98 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			}
 		}
 
-		// MenuBar options
+		// If exit is pressed, exits
 		if (e.getSource() == exitItem) {
 			System.exit(1);
 		}
+
+		// If rentDVD is pressed, creates a new DVD, runs the
+		// RentDVDDialog, and adds the DVD to the list
 		if (e.getSource() == rentDVD) {
 			DVD dvd = new DVD();
 			RentDVDDialog dialog = new RentDVDDialog(this, dvd);
 			list.add(dvd);
 		}
 
+		// If rentGame is pressed, creates a new game, runs the
+		// RentGameDialog, and adds the game to the list
 		if (e.getSource() == rentGame) {
 			Game game = new Game();
 			RentGameDialog dialog = new RentGameDialog(this, game);
 			list.add(game);
 		}
 
+		// If return is pressed, prompts for return date, and handles
+		// removing the returned item from the list if everything is
+		// entered correctly
 		if (returnItem == e.getSource()) {
 
+			// Gets the index of the selected item
 			int index = JListArea.getSelectedIndex();
+
+			// Lets the user know if they haven't selected an item
 			if (index < 0) {
 				JOptionPane.showMessageDialog(null,
 						"Please select the DVD or game you are returning");
-			} else {
+			}
+
+			// Once item is selected, prompts the user for a return date
+			else {
 				GregorianCalendar date = new GregorianCalendar();
 				date.setLenient(false);
 				String inputDate = JOptionPane
 						.showInputDialog("Enter return date: ");
 				DVD unit = list.get(index);
+
+				// If there is something entered in the return date
+				// input, continues with the process of returning
 				if (inputDate != null) {
 					SimpleDateFormat df = new SimpleDateFormat(
 							"MM/dd/yyyy");
 
+					// Attempts to parse the return date
 					try {
 						Date newDate = df.parse(inputDate);
 						date.setTime(newDate);
-						if (date.compareTo(
-								list.get(index).getBought()) < 0) {
-							JOptionPane.showMessageDialog(null,
-									"You can not return an item before it was checked out! Please try again");
-						} else {
-							JOptionPane.showMessageDialog(null, ""
-									+ unit.getNameOfRenter()
-									+ ", thank you for returning "
-									+ unit.getTitle() + ". You owe: "
-									+ unit.getCost(date) + " dollars");
-							list.remove(index);
+
+						// Checks to see that the date is in the right
+						// format
+						if (inputDate.length() != 10
+								|| inputDate.charAt(2) != '/'
+								|| inputDate.charAt(5) != '/')
+							throw new Exception();
+
+						else {
+
+							// If the return date is before the checked
+							// out
+							// date, lets the user know and doesn't
+							// continue
+							if (date.compareTo(
+									list.get(index).getBought()) < 0) {
+								JOptionPane.showMessageDialog(null,
+										"You can not return an item before it was checked out! Please try again");
+							}
+
+							// If the return date is valid, lets the
+							// user
+							// know that the item was successfully
+							// returned
+							// and how much money they owe, and removes
+							// the
+							// returned item from the list
+							else {
+								JOptionPane.showMessageDialog(null, ""
+										+ unit.getNameOfRenter()
+										+ ", thank you for returning "
+										+ unit.getTitle()
+										+ ". You owe: "
+										+ unit.getCost(date)
+										+ " dollars");
+								list.remove(index);
+							}
 						}
-					} catch (ParseException pe) {
+					} catch (Exception pe) {
 						JOptionPane.showMessageDialog(null,
 								"Could not parse input date! Please try again");
 					}
@@ -191,31 +245,69 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 			}
 
 		}
+
+		// If the lateItem button is pressed, prompts the user for a
+		// date to check lateness of items, if the date is valid,
+		// displays the late items in a new dialog box, as well as how
+		// many days late they are
 		if (e.getSource() == lateItem) {
+
+			// Creates a new calendar to compare dates and sets its
+			// leniency
 			GregorianCalendar date = new GregorianCalendar();
 			date.setLenient(false);
+
+			// Prompts user for the date they want
 			String inputDate = JOptionPane.showInputDialog(
 					"Please enter the date you are interested in: ");
+
+			// If there is something entered in the field continues as
+			// normal
 			if (inputDate != null) {
 				SimpleDateFormat df = new SimpleDateFormat(
 						"MM/dd/yyyy");
+
+				// Attempts to parse the date entered, if it cannot be
+				// parsed, throws a ParseException that notifies the
+				// user of this
 				try {
 					Date newDate = df.parse(inputDate);
 					date.setTime(newDate);
-					if (list.getLate(date).equals(""))
-						JOptionPane.showMessageDialog(null,
-								"No rented items are late as of "
-										+ DateFormat.getDateInstance(
-												DateFormat.SHORT)
-												.format(newDate));
-					else
-						JOptionPane.showMessageDialog(null,
-								"Below are the items that will be late as of "
-										+ DateFormat.getDateInstance(
-												DateFormat.SHORT)
-												.format(newDate)
-										+ ": \n" + list.getLate(date));
-				} catch (ParseException pe) {
+
+					// Checks to see that the date is in the right
+					// format
+					if (inputDate.length() != 10
+							|| inputDate.charAt(2) != '/'
+							|| inputDate.charAt(5) != '/')
+						throw new Exception();
+
+					else {
+
+						// If there are no items late as of the date
+						// entered, displays an appropriate message
+						if (list.getLate(date).equals(""))
+							JOptionPane.showMessageDialog(null,
+									"No rented items are late as of "
+											+ DateFormat
+													.getDateInstance(
+															DateFormat.SHORT)
+													.format(newDate));
+
+						// If there are late items as of the date
+						// entered,
+						// displays those items, as well as the numberof
+						// days late they will be
+						else
+							JOptionPane.showMessageDialog(null,
+									"Below are the items that will be late as of "
+											+ DateFormat
+													.getDateInstance(
+															DateFormat.SHORT)
+													.format(newDate)
+											+ ": \n"
+											+ list.getLate(date));
+					}
+				} catch (Exception pe) {
 					JOptionPane.showMessageDialog(null,
 							"Could not parse input date! Please try again");
 				}
@@ -225,6 +317,9 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 
 	}
 
+	/******************************************************************
+	 * Main class that runs the program
+	 *****************************************************************/
 	public static void main(String[] args) {
 		new RentalStoreGUI();
 	}
