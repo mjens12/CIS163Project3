@@ -27,19 +27,44 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 	/** Holds menu bar */
 	private JMenuBar menus;
 
-	/** Menus in the menu bar */
+	/** File menu */
 	private JMenu fileMenu;
+
+	/** Action menu */
 	private JMenu actionMenu;
 
-	/** Menu items in each of the menus */
+	/** Menu item for opening serialized object */
 	private JMenuItem openSerItem;
+
+	/** Menu item for exit */
 	private JMenuItem exitItem;
+
+	/** Menu item for saving serialized object */
 	private JMenuItem saveSerItem;
+
+	/**
+	 * Menu item for opening text object (not used in proj3, for proj4)
+	 */
 	private JMenuItem openTextItem;
+
+	/**
+	 * Menu item for saving text object (not used in proj3, for proj4)
+	 */
 	private JMenuItem saveTextItem;
+
+	/** Menu item for renting a DVD */
 	private JMenuItem rentDVD;
+
+	/** Menu item for renting a game */
 	private JMenuItem rentGame;
+
+	/** Menu item for returning an item */
 	private JMenuItem returnItem;
+
+	/**
+	 * Menu item for checking the lateness of an item based on user
+	 * entered date
+	 */
 	private JMenuItem lateItem;
 
 	/** Holds the RentalStore list with items */
@@ -209,8 +234,7 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 						else {
 
 							// If the return date is before the checked
-							// out
-							// date, lets the user know and doesn't
+							// out date, lets the user know and doesn't
 							// continue
 							if (date.compareTo(
 									list.get(index).getBought()) < 0) {
@@ -219,12 +243,9 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 							}
 
 							// If the return date is valid, lets the
-							// user
-							// know that the item was successfully
-							// returned
-							// and how much money they owe, and removes
-							// the
-							// returned item from the list
+							// user know that the item was successfully
+							// returned and how much money they owe, and
+							// removes the returned item from the list
 							else {
 								JOptionPane.showMessageDialog(null, ""
 										+ unit.getNameOfRenter()
@@ -294,9 +315,8 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 													.format(newDate));
 
 						// If there are late items as of the date
-						// entered,
-						// displays those items, as well as the numberof
-						// days late they will be
+						// entered, displays those items, as well as the
+						// number of days late they will be
 						else
 							JOptionPane.showMessageDialog(null,
 									"Below are the items that will be late as of "
@@ -307,7 +327,10 @@ public class RentalStoreGUI extends JFrame implements ActionListener {
 											+ ": \n"
 											+ list.getLate(date));
 					}
-				} catch (Exception pe) {
+				}
+
+				// Catches exceptions
+				catch (Exception pe) {
 					JOptionPane.showMessageDialog(null,
 							"Could not parse input date! Please try again");
 				}

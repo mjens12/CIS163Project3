@@ -162,6 +162,7 @@ public class RentDVDDialog extends JDialog implements ActionListener {
 						|| dueBackTxt.getText().charAt(5) != '/')
 					throw new Exception();
 				else {
+
 					// If the due back date is later than the rented on
 					// date, fills the unit object with the entered
 					// information

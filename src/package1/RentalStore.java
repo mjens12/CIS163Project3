@@ -57,14 +57,30 @@ public class RentalStore extends AbstractListModel {
 		fireIntervalAdded(this, 0, listDVDs.size());
 	}
 
+	/******************************************************************
+	 * Method for getting a DVD from the list
+	 * 
+	 * @param i
+	 *            Index of item to be grabbed
+	 *****************************************************************/
 	public DVD get(int i) {
 		return listDVDs.get(i);
 	}
 
+	/******************************************************************
+	 * Method for getting a DVD from the list and parsing its
+	 * information into a string to be displayed
+	 * 
+	 * @param arg0
+	 *            Index of item to be grabbed
+	 * 
+	 * @return Object a string with all the item's information
+	 *****************************************************************/
 	public Object getElementAt(int arg0) {
 
 		DVD unit = listDVDs.get(arg0);
 
+		// Formats the rented on and due back dates
 		try {
 			String rentedOnDateStr = DateFormat
 					.getDateInstance(DateFormat.SHORT)
@@ -74,27 +90,45 @@ public class RentalStore extends AbstractListModel {
 					.getDateInstance(DateFormat.SHORT)
 					.format(unit.getDueBack().getTime());
 
+			// Creates the String for the item's info
 			String line = "Name: "
 					+ listDVDs.get(arg0).getNameOfRenter() + " ";
 
+			// Adds info to the string
 			line += "Title: " + unit.getTitle() + ", ";
 			line += "Rented On: " + rentedOnDateStr + ", ";
 			line += "Due Back: " + dueBackOnDateStr;
 
+			// Adds additional info to the string if the item is a game
 			if (unit instanceof Game)
 				line += ", Player: " + ((Game) unit).getPlayer();
 
+			// Returns the completed string
 			return line;
-		} catch (Exception ex) {
+		}
+
+		// Catches exceptions
+		catch (Exception ex) {
 			return null;
 		}
 	}
 
+	/******************************************************************
+	 * Method for getting the size of the list of items
+	 * 
+	 * @return int Size of DVD list
+	 *****************************************************************/
 	public int getSize() {
 		// return 5;
 		return listDVDs.size();
 	}
 
+	/******************************************************************
+	 * Method for saving the list as a serializable object
+	 * 
+	 * @param filename
+	 *            Filename of saved file
+	 *****************************************************************/
 	public void saveAsSerializable(String filename) {
 		try {
 			FileOutputStream fos = new FileOutputStream(filename);
@@ -107,6 +141,12 @@ public class RentalStore extends AbstractListModel {
 		}
 	}
 
+	/******************************************************************
+	 * Method for loading the list as a serializable object
+	 * 
+	 * @param filename
+	 *            Filename of loaded file
+	 *****************************************************************/
 	public void loadFromSerializable(String filename) {
 		try {
 			FileInputStream fis = new FileInputStream(filename);
@@ -120,10 +160,26 @@ public class RentalStore extends AbstractListModel {
 		}
 	}
 
+	/******************************************************************
+	 * Method for checking if any items will be considered late after a
+	 * user provided date. Returns a string of "" if no items will be
+	 * late, returns items, their information, and their number of days
+	 * late on sepparate lines if there are late items
+	 * 
+	 * @param lateDate
+	 *            The date to test
+	 *****************************************************************/
 	public String getLate(GregorianCalendar lateDate) {
+		// Default string
 		String lateThings = "";
+
+		// Runs through the list of DVDs and checks to see if any of
+		// them will be late based on the passed date
 		for (int i = 0; i < listDVDs.size(); i++) {
 			if (listDVDs.get(i).getDueBack().compareTo(lateDate) <= 0) {
+
+				// If the item is late, pulls its info out and adds it
+				// to the string
 				try {
 					DVD unit = listDVDs.get(i);
 					String rentedOnDateStr = DateFormat
@@ -141,23 +197,40 @@ public class RentalStore extends AbstractListModel {
 					line += "Rented On: " + rentedOnDateStr + ", ";
 					line += "Due Back: " + dueBackOnDateStr;
 
+					// If the late item is a game, adds the type of
+					// console to the string
 					if (unit instanceof Game)
 						line += ", Player: "
 								+ ((Game) unit).getPlayer();
 
+					// Adds the number of days late to the string
 					line += (", "
 							+ daysBetween(lateDate, unit.getDueBack())
 							+ " days late");
 					lateThings += (line + "\n");
 
-				} catch (Exception ex) {
+				}
+
+				// Catches exceptions
+				catch (Exception ex) {
 
 				}
 			}
 		}
+
+		// Returns the completed string
 		return lateThings;
 	}
 
+	/******************************************************************
+	 * Method for computing the number of days between two dates. Used
+	 * to compute how many days late an item will be
+	 * 
+	 * @param d1
+	 *            First date to be compared
+	 * @param d2
+	 *            Second date to be compared
+	 *****************************************************************/
 	private int daysBetween(GregorianCalendar d1,
 			GregorianCalendar d2) {
 		return (int) ((d1.getTimeInMillis() - d2.getTimeInMillis())

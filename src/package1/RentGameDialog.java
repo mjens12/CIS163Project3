@@ -71,18 +71,18 @@ public class RentGameDialog extends JDialog implements ActionListener {
 	 *            The Game to be created
 	 *****************************************************************/
 	public RentGameDialog(JFrame parent, Game d) {
+
 		// Calls parent and create a 'modal' dialog
 		super(parent, true);
 
 		// Sets the title and size of the frame as well as close status
-
 		setTitle("Rent a Game:");
 		closeStatus = false;
 		setSize(400, 200);
 
 		// Sets the passed DVD to unit
-
 		unit = d;
+
 		// Prevents user from closing window
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -116,7 +116,6 @@ public class RentGameDialog extends JDialog implements ActionListener {
 		textPanel.add(dueBackTxt);
 
 		// combobox for player type, not used here, for Proj 4
-
 		// playerList = new JComboBox(playerOptions);
 		// playerList.setSelectedIndex(0);
 		// playerList.addActionListener(this);
@@ -154,6 +153,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 
 		// If OK is clicked, fill the object with entered info
 		if (e.getSource() == okButton) {
+
 			// Allows the frame to be closed
 			closeStatus = true;
 
@@ -182,6 +182,7 @@ public class RentGameDialog extends JDialog implements ActionListener {
 						|| dueBackTxt.getText().charAt(5) != '/')
 					throw new Exception();
 				else {
+
 					// If the due back date is later than the rented on
 					// date, fills the unit object with the entered
 					// information
